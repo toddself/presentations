@@ -23,7 +23,8 @@
 					<h1>Sharing is Caring</h1>
 					<h3>Enabling Code Reuse for Backbone Models</h3>
 					<p>
-						<small><a href="http://blog.selfassembled.org">Todd Kennedy</a> / <a href="http://twitter.com/whale_eat_squid">@whale_eat_squid</a></small>
+						<small><a href="http://blog.selfassembled.org">Todd Kennedy</a> / <a href="http://twitter.com/whale_eat_squid">@whale_eat_squid</a></small><br>
+						<small>Tech Lead, Cond&eacute; Nast Traveler</small>
 					</p>
 				</section>
 
@@ -50,13 +51,11 @@
 						<p>
 							But that's why we became programmers. Why do something over and over again when you can just write a small shell script to do it for you?
 						</p>
+						<p>
+							<img src="img/grumpycat_shellscript.jpg">
+						</p>
 						<aside class="notes">
-						Taking computer science classes in High School (yes I was that guy), my teacher kept repeating the same mantra over and over again to us: "Don't Repeat Yourself"
-						<ul>
-							<li>When she taught us how to write functions: DRY
-							<li>When she taught us how to make constants: DRY
-							<li>When she taught us to use external libraries: DRY
-						</ul>
+							We are lazy.  Many of us became programmers because we could easily automate repitious tasks. We became programmers because when our teacher made us write lines in the 7th grade you wrote out a for-loop version and submitted it and they accepted it because you were "creative." (Suckers)
 					</aside>
 					</section>
 					<section>
@@ -79,7 +78,7 @@
 }
 						</code></pre>
 						<aside class="notes">
-							Does moving your hand off the keyboard to the mouse take too long?
+							Does moving your hand off the keyboard to the mouse take too long? Did that github redesign totally mess with your spatial memory? Don't worry! BASH functions to the rescue!
 						</aside>
 					</section>
 
@@ -99,7 +98,7 @@ public static final float PI = 3.14;
 						</code></pre>
 					</p>
 					<aside class="notes">
-						A reductive example, but none the less, we only now
+						This is a totally reductive example, but none the less, we only now
 						have to change the definition of Pi in one place and we
 						can use it how many ever times we want to.
 
@@ -132,11 +131,14 @@ var Post = Backbone.Model.extend({
 });
 							</code></pre>
 	   					</p>
+	   					<aside class="notes">
+	   						So Backbone! Awesome pattern for building client-side apps. But my backend is in Python? Well, damn. Now I've gone and broken that first rule of programmers club.
+	   					</aside>
 	   				</section>
 	   				<section>
 	   					<p><img src="img/broken_rules.jpg"></p>
 	   					<aside class="notes">
-	   						<p>Every time I find myself repeating myself I feel like I've just broken the first two rules of programmers club.</p>
+	   						<p>So every time time I find myself repeating myself I feel like I've just broken the first two rules of programmers club.</p>
 	   						<p>
 	   							Don't.<br>
 	   							Repeat.<br>
@@ -154,6 +156,14 @@ var Post = Backbone.Model.extend({
 					<p>
 						It's almost like we speak a different language...
 					</p>
+					<aside class="notes">
+					<p>But Client/Server Sharing is Difficult!</p>
+					<p>
+						Ask my three year old if you can play with his cars, and you'll see why we so don't share a lot of code between the client and the server end.
+					</p>
+					<p>FYI: The answer is NO DADA. MY CARS. I get to play with the MTA G train car that's missing a wheel. (True to life representation though!)</p>
+					<p>Code reuse is not an easy thing to do. There are libraries for server-side languages which attempt to bridge this divide: GWT, Pyjamas for Python, but lets face it, I don't write my C# code in Haskell.</p>
+					</aside>
 				</section>
 
 				<section>
@@ -162,6 +172,10 @@ var Post = Backbone.Model.extend({
 						<img src="img/haz_js_server.jpg"><br>
 						And yes, I am old enough to remember Netscape LiveWire and the insane &lt;server&gt; tag...
 					</p>
+					<aside class="notes">
+						<p>So like, Node happened. And yes, there were various attempts to make JavaScript work on the server before, but we remember how awesome it was to use javascript in 2001, right?</p>
+						<p>The sooner we move forward, the sooner I can stop taking high blood pressure medication.</p>
+					</aside>
 				</section>
 
 				<section>
@@ -178,6 +192,13 @@ var Post = Backbone.Model.extend({
 							<li>A method of knowing which environment we're in</li>
 						</ol>
 					</p>
+					<aside class="notes">
+						So we've got a usable back end javascript environment.  And we've got tools that level the playing field on the client (stitch, browserify, require.js - the list goes on), so lets start sharing more! In order to do this we're going to need to solve for two immediate issues:
+						<ol>
+							<li>Replace backbone.sync</li>
+							<li>Write the data to the filesystem</li>
+						</ol>
+					</aside>
 				</section>
 
 				<section>
@@ -197,6 +218,10 @@ Backbone.Sync = function(method, model, options);
 						<p>
 							And since it returns a jQuery $.Deferred on the front end, we'll make this "less surprises" and give you back a `then`-able promise from <a href="https://github.com/kriskowal/q">Q</a>.
 						</p>
+						<aside class="notes">
+							<p>One of the best design decisions in backbone (imho) was to separate it's sync mechanism from the methods which rely on it. This allows us to easily wholesale replace it whenever we need to provide alternate functionality. 
+							<p>We'll also follow the rule of less surprises (didn't get to that one yet? It's in your handbook, page 400) and also return a then-able object much like jQuery's $.Deferred object that the default sync returns
+						</aside>
 					</section>
 					<section>
 						<h2>Stub Out Module...</h2>
@@ -241,7 +266,7 @@ switch(method){
 							</code></pre>
 						</p>
 					<aside class="notes">
-						I find this a little obnoxious, but Backbone doesn't actually just use the HTTP verbs for all of it's methods -- would it be so hard to make create post and read get?
+						I find this a little obnoxious, but Backbone doesn't actually just use the HTTP verbs for all of it's methods -- would it be so hard to make create post and read get? This definitely betrays it's ruby-on-rails roots.
 					</aside>
 					</section>
 					<section>
@@ -263,10 +288,10 @@ var callback = function(err, results){
 						</p>
 						<aside class="notes">
 							<p>
-								MongoDB WTF? If you perform an upsert, you get back 1. Seriously. Try it. So if we upsert, we'll just return the model data since it's already got all the info we need.
+								Ahh.  You're all looking at that <strong>1</strong> in there eh? well...MongoDB WTF? If you perform an upsert, you get back 1. Seriously. Try it. So if we upsert, we'll just return the model data since it's already got all the info we need.
 							</p>
 							<p>
-								And we are resolving with the JSON representation since that's the normal sync method does. I guess the third rule of programming is to lessen surprises.
+								And we are resolving with the JSON representation since that's the normal sync method does. Again with that "less surprises" thing.
 							</p>
 						</aside>
 					</section>
@@ -286,6 +311,8 @@ case 'delete':
 	break;
 							</code></pre>
 						</p>
+						<aside class="notes">
+							OMG A THIRD SLIDE WITH CODE IN A ROW?! But this is the easy part as these verbs really do just map out to simple MongoDB methods.
 					</section>
 					<section>
 						<h2>Read is a Little More Complex</h2>
@@ -306,6 +333,9 @@ default:
 	break;
 						</code></pre>
 					</p>
+					<aside class="notes">
+						Reading is a little more difficult since we need to formulate a query. Luckily REST tells us that we're just going to get an ID, so that's an easy enough query to watch out for. If you managed to call sync without a method, how does a little rejection feel?
+					</aside>
 					</section>
 					<section>
 						<h2>A Word of Caution</h2>
@@ -316,6 +346,9 @@ default:
 							That is an exercise left up to the reader.
 						</p>
 					</section>
+					<aside class="notes">
+						Really, I'm just being lazy here because I haven't needed to deal with collections server side...yet
+					</aside>
 				</section>
 				<section>
 					<section>
@@ -330,6 +363,9 @@ default:
 								<li>If we expect Browserify to work, we need to check <code>process.browser</code> as well</li>
 							</ul>
 						</p>
+						<aside class="notes">
+							OK. So that was actually the hard part.  Seriously.  Now we just need to a way to figure out if we should replace sync or not
+						</aside>
 					</section>
 					<section>
 						<h2>Attach the Sync on the Server</h2>
@@ -346,6 +382,9 @@ if(typeof process !== 'undefined' &&
 								Don't forget: we need to make sure the sync method gets the datastore configuration!
 							</p>
 						</p>
+						<aside class="notes">
+							That process.browser is from browserify, but if you're not using it we can just check for exports as well.
+						</aside>
 					</section>
 					<section>
 						<h2>And Use that to Return a Custom Model</h2>
@@ -384,14 +423,21 @@ module.exports = function(server, collection){
 					<p>
 						Browserify, RequireJS and CommonJS aware!
 					</p>
+					<aside class="notes">
+						<p>
+							And Cond&eacute; Nast Traveler uses it everyday, so I am eating my own dogfood
+						</p>
+					</aside>
+				</section>
+
+				<section>
+					<h2>Questions?</h2>
 				</section>
 
 
 				<section data-background="img/brooklyn_bridge.jpg">
 					<h1>Thank you!</h1>
 					<h3>Todd Kennedy <br><a href="http://blog.selfassembled.org">blog.selfassembled.org</a></h3>
-
-
 				</section>
 
 			</div>
