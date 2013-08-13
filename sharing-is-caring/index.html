@@ -138,11 +138,14 @@ var Post = Backbone.Model.extend({
 	   				<section>
 	   					<p><img src="img/broken_rules.jpg"></p>
 	   					<aside class="notes">
-	   						<p>So every time time I find myself repeating myself I feel like I've just broken the first two rules of programmers club.</p>
+	   						<p>Every time time I find myself repeating myself I feel like I've just broken the first two rules of programmers club.</p>
 	   						<p>
 	   							Don't.<br>
 	   							Repeat.<br>
 	   							Yourself.
+	   						</p>
+	   						<p>
+	   							OK I think that's enough rote memorization for now...
 	   						</p>
 	   					</aside>
 	   				</section>
@@ -157,12 +160,9 @@ var Post = Backbone.Model.extend({
 						It's almost like we speak a different language...
 					</p>
 					<aside class="notes">
-					<p>But Client/Server Sharing is Difficult!</p>
-					<p>
-						Ask my three year old if you can play with his cars, and you'll see why we so don't share a lot of code between the client and the server end.
-					</p>
-					<p>FYI: The answer is NO DADA. MY CARS. I get to play with the MTA G train car that's missing a wheel. (True to life representation though!)</p>
-					<p>Code reuse is not an easy thing to do. There are libraries for server-side languages which attempt to bridge this divide: GWT, Pyjamas for Python, but lets face it, I don't write my C# code in Haskell.</p>
+					<p>Ask my three year old if you can play with his cars, and you'll see why we so don't share a lot of code between the client and the server end.<br>
+					FYI: The answer is NO DADA. MY CARS. I get to play with the MTA G train car that's missing a wheel. (True to life representation though!)<br>
+					Code reuse is not an easy thing to do. There are libraries for server-side languages which attempt to bridge this divide: GWT, Pyjamas for Python, but lets face it, I don't write my C# code in Haskell.</p>
 					</aside>
 				</section>
 
@@ -193,10 +193,10 @@ var Post = Backbone.Model.extend({
 						</ol>
 					</p>
 					<aside class="notes">
-						So we've got a usable back end javascript environment.  And we've got tools that level the playing field on the client (stitch, browserify, require.js - the list goes on), so lets start sharing more! In order to do this we're going to need to solve for two immediate issues:
+						So we've got a usable back end javascript environment. And we've got tools that level the playing field on the client (es5shim, jquery, modernizr, stitch, browserify, require.js - the list goes on), so lets start sharing more by starting with our data models. In order to do this we're going to need to solve for two immediate issues:
 						<ol>
-							<li>Replace backbone.sync</li>
-							<li>Write the data to the filesystem</li>
+							<li>Make a backbone.sync to write to disc since it defaults to AJAX</li>
+							<li>Know when to inject that version into our model</li>
 						</ol>
 					</aside>
 				</section>
@@ -219,8 +219,8 @@ Backbone.Sync = function(method, model, options);
 							And since it returns a jQuery $.Deferred on the front end, we'll make this "less surprises" and give you back a `then`-able promise from <a href="https://github.com/kriskowal/q">Q</a>.
 						</p>
 						<aside class="notes">
-							<p>One of the best design decisions in backbone (imho) was to separate it's sync mechanism from the methods which rely on it. This allows us to easily wholesale replace it whenever we need to provide alternate functionality. 
-							<p>We'll also follow the rule of less surprises (didn't get to that one yet? It's in your handbook, page 400) and also return a then-able object much like jQuery's $.Deferred object that the default sync returns
+							<p>One of the best decisions was to separate sync from the methods which rely on it: save and fetch. This allows us to easily replace it whenever we need to provide alternate functionality so making backbone sync to socket.io, localStorage, Redis, whatever, becomes a simple method swap.<br>
+							And following the rule of less surprises (Check your handbook, page 42) we are going to mimic default sync: return a then-able and resolve that then-able with pure JSON
 						</aside>
 					</section>
 					<section>
@@ -243,7 +243,8 @@ module.exports = function(server, collection){
 							</code></pre>
 						</p>
 						<aside class="notes">
-							We need the module to return a function which then returns our sync method or we'd never be able to get our server and collection info into it easily. We'll also add in the libraries we know we're going to need.
+							We need the module to return a function which then returns our sync method or we'd never be able to get our server and collection info into it easily. We'll also add in the libraries we know we're going to need: Kriskowal's Q and MongoJS.<br>
+							MongoJS hides a lot of nasty MongoDB driver implementation details from us and Q provides our "then"-able object.
 						</aside>
 					</section>
 					<section>
@@ -266,7 +267,7 @@ switch(method){
 							</code></pre>
 						</p>
 					<aside class="notes">
-						I find this a little obnoxious, but Backbone doesn't actually just use the HTTP verbs for all of it's methods -- would it be so hard to make create post and read get? This definitely betrays it's ruby-on-rails roots.
+						I find this a little obnoxious, but Backbone doesn't actually just use the HTTP verbs for all of it's method, thanks to it's Ruby-on-Rails extrapolative roots. Luckily, unlike the default sync method, we dont't have to do an object lookup to get this to do the right thing.
 					</aside>
 					</section>
 					<section>
@@ -288,10 +289,10 @@ var callback = function(err, results){
 						</p>
 						<aside class="notes">
 							<p>
-								Ahh.  You're all looking at that <strong>1</strong> in there eh? well...MongoDB WTF? If you perform an upsert, you get back 1. Seriously. Try it. So if we upsert, we'll just return the model data since it's already got all the info we need.
+								Ahh.  You're all looking at that <strong>1</strong> in there eh? well...MongoDB WTF? If you perform an upsert (updating data in place you've already stored), you get back 1. Seriously. Try it. So if we upsert, we'll just return the model data since it's already got all the info we need, we just wanted to verify it's now written to mongo.
 							</p>
 							<p>
-								And we are resolving with the JSON representation since that's the normal sync method does. Again with that "less surprises" thing.
+								And see that returning the JSON representation of the model when we resolve? This what the standard sync does, so, again, less surprise == better.
 							</p>
 						</aside>
 					</section>
@@ -313,6 +314,7 @@ case 'delete':
 						</p>
 						<aside class="notes">
 							OMG A THIRD SLIDE WITH CODE IN A ROW?! But this is the easy part as these verbs really do just map out to simple MongoDB methods.
+						</aside>
 					</section>
 					<section>
 						<h2>Read is a Little More Complex</h2>
@@ -364,7 +366,8 @@ default:
 							</ul>
 						</p>
 						<aside class="notes">
-							OK. So that was actually the hard part.  Seriously.  Now we just need to a way to figure out if we should replace sync or not
+							OK. Phew. Still with me? That was the complex part of the application, so we're in the home stretch. BUT! This next part is almost the most important part -- we need to explain to our code when to attach our new sync method or when to use the default (or even a third implementation!)
+							We check for process, exports and process.browser.
 						</aside>
 					</section>
 					<section>
@@ -383,7 +386,7 @@ if(typeof process !== 'undefined' &&
 							</p>
 						</p>
 						<aside class="notes">
-							That process.browser is from browserify, but if you're not using it we can just check for exports as well.
+							A bit of gnarly if statement up there, but this should take care of all our scenarios -- we need to check if process exists, and then for browserify, we check for "browser" and finally lets see if exports exists for shits and giggles.
 						</aside>
 					</section>
 					<section>
@@ -403,13 +406,17 @@ module.exports = function(server, collection){
 							</code></pre>
 						</p>
 						<aside class="notes">
-							Don't forget to set the idAttribute correctly since Mongo loves it some _id instead of id.
+							We will return a custom model back, setting idAttribute correctly for mongodb, just using the basic Backbone.Model.extend method.
 						</aside>
 					</section>
 				</section>
 
 				<section>
-					<h2>Of Course It's in NPM and Bower!</h2>
+					<h2>Questions?</h2>
+				</section>
+
+				<section>
+					<h2>It's live in NPM and Bower!</h2>
 					<p>
 						<ul>
 							<li>https://github.com/condenast/mongosync</li>
@@ -429,11 +436,6 @@ module.exports = function(server, collection){
 						</p>
 					</aside>
 				</section>
-
-				<section>
-					<h2>Questions?</h2>
-				</section>
-
 
 				<section data-background="img/brooklyn_bridge.jpg">
 					<h1>Thank you!</h1>
