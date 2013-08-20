@@ -30,7 +30,7 @@
 
 				<section>
 					<section>
-						<h2>The Two Rules of Software Development Club</h2>
+						<h2>The Two Rules of Software Fight Club</h2>
 						<p>
 							<img src="img/programmers_club.png">
 							<br>
@@ -38,11 +38,11 @@
 						</p>
 
 					<aside class="notes">
-						Taking computer science classes in High School (yes I was that guy), my teacher kept repeating the same mantra over and over again to us: "Don't Repeat Yourself"
 						<ul>
-							<li>When she taught us how to write functions: DRY
-							<li>When she taught us how to make constants: DRY
-							<li>When she taught us to use external libraries: DRY
+							<li>Two Rules of Software Fight Club
+							<li>Functions: DRY
+							<li>Constants: DRY
+							<li>External Libraries: DRY
 						</ul>
 					</aside>
 					</section>
@@ -55,10 +55,14 @@
 							<img src="img/grumpycat_shellscript.jpg">
 						</p>
 						<aside class="notes">
-							We are lazy.  Many of us became programmers because we could easily automate repitious tasks. We became programmers because when our teacher made us write lines in the 7th grade you wrote out a for-loop version and submitted it and they accepted it because you were "creative." (Suckers)
-					</aside>
+							<ul>
+								<li>Lazy. It's ok
+								<li>For loop when writing lines
+							</ul>
+						</aside>
 					</section>
 					<section>
+						<h2>Hate That New Github Redesign?</h2>
 						<pre><code>function pr (){
     ARGS=("$@")
 
@@ -78,7 +82,9 @@
 }
 						</code></pre>
 						<aside class="notes">
-							Does moving your hand off the keyboard to the mouse take too long? Did that github redesign totally mess with your spatial memory? Don't worry! BASH functions to the rescue!
+							<ul>
+								<li>Hands on keyboard LAZY
+							</ul>
 						</aside>
 					</section>
 
@@ -98,17 +104,16 @@ public static final float PI = 3.14;
 						</code></pre>
 					</p>
 					<aside class="notes">
-						This is a totally reductive example, but none the less, we only now
-						have to change the definition of Pi in one place and we
-						can use it how many ever times we want to.
-
-						(And yes, that first example is Pascal. Get off my lawn.)
+						<ul>
+							<li>Define one place
+							<li>Need to change, OK
+						</ul>
 					</aside>
 				</section>
 
 				<section>
 					<section>
-						<h2>What's this Backbone Thing?</h2>
+						<h2>So what's this Backbone Thing?</h2>
 						<p>
 							But I still have to maintain models twice...
 							<pre><code>
@@ -131,22 +136,22 @@ var Post = Backbone.Model.extend({
 });
 							</code></pre>
 	   					</p>
+
 	   					<aside class="notes">
-	   						So Backbone! Awesome pattern for building client-side apps. But my backend is in Python? Well, damn. Now I've gone and broken that first rule of programmers club.
+	   						<ul>
+	   							<li>Javascript!
+	   							<li>Backend: Python, Frontend: Javascript
+	   							<li>BREAKING THE RULES
+	   						</ul>
 	   					</aside>
 	   				</section>
 	   				<section>
-	   					<p><img src="img/broken_rules.jpg"></p>
+	   					<p><img src="img/breaking_law.jpg"></p>
 	   					<aside class="notes">
-	   						<p>Every time time I find myself repeating myself I feel like I've just broken the first two rules of programmers club.</p>
-	   						<p>
-	   							Don't.<br>
-	   							Repeat.<br>
-	   							Yourself.
-	   						</p>
-	   						<p>
-	   							OK I think that's enough rote memorization for now...
-	   						</p>
+	   						<ul>
+	   							<li>some rules are NOT meant to be broken
+	   							<li>sort of a pain in the ass!
+	   						</ul>
 	   					</aside>
 	   				</section>
 				</section>
@@ -160,9 +165,11 @@ var Post = Backbone.Model.extend({
 						It's almost like we speak a different language...
 					</p>
 					<aside class="notes">
-					<p>Ask my three year old if you can play with his cars, and you'll see why we so don't share a lot of code between the client and the server end.<br>
-					FYI: The answer is NO DADA. MY CARS. I get to play with the MTA G train car that's missing a wheel. (True to life representation though!)<br>
-					Code reuse is not an easy thing to do. There are libraries for server-side languages which attempt to bridge this divide: GWT, Pyjamas for Python, but lets face it, I don't write my C# code in Haskell.</p>
+						<ul>
+							<li>Hard to do when we speak different languagtes
+							<li>GWT, Pyjamas, etc
+							<li>C# in haskell
+						</ul>
 					</aside>
 				</section>
 
@@ -173,8 +180,11 @@ var Post = Backbone.Model.extend({
 						And yes, I am old enough to remember Netscape LiveWire and the insane &lt;server&gt; tag...
 					</p>
 					<aside class="notes">
-						<p>So like, Node happened. And yes, there were various attempts to make JavaScript work on the server before, but we remember how awesome it was to use javascript in 2001, right?</p>
-						<p>The sooner we move forward, the sooner I can stop taking high blood pressure medication.</p>
+						<ul>
+							<li>node! js on the backend
+							<li>ES5 implemented no browser implementation
+							<li>Big so why not we share!
+						</ul>
 					</aside>
 				</section>
 
@@ -193,8 +203,9 @@ var Post = Backbone.Model.extend({
 						</ol>
 					</p>
 					<aside class="notes">
-						So we've got a usable back end javascript environment. And we've got tools that level the playing field on the client (es5shim, jquery, modernizr, stitch, browserify, require.js - the list goes on), so lets start sharing more by starting with our data models. In order to do this we're going to need to solve for two immediate issues:
 						<ol>
+							<li>JS on server, JS on front end
+							<li>require, es5shim, jquery, require, browserify, stitch, etc.
 							<li>Make a backbone.sync to write to disc since it defaults to AJAX</li>
 							<li>Know when to inject that version into our model</li>
 						</ol>
@@ -203,7 +214,7 @@ var Post = Backbone.Model.extend({
 
 				<section>
 					<section>
-						<h2>Backbone.Sync is Designed for this</h2>
+						<h2>Luckily Backbone.Sync is Designed for this</h2>
 						<p>
 							Backbone.Sync has a very easy signature to replace:
 						</p>
@@ -219,15 +230,18 @@ Backbone.Sync = function(method, model, options);
 							And since it returns a jQuery $.Deferred on the front end, we'll make this "less surprises" and give you back a `then`-able promise from <a href="https://github.com/kriskowal/q">Q</a>.
 						</p>
 						<aside class="notes">
-							<p>One of the best decisions was to separate sync from the methods which rely on it: save and fetch. This allows us to easily replace it whenever we need to provide alternate functionality so making backbone sync to socket.io, localStorage, Redis, whatever, becomes a simple method swap.<br>
-							And following the rule of less surprises (Check your handbook, page 42) we are going to mimic default sync: return a then-able and resolve that then-able with pure JSON
+							<ul>
+								<li>save and fetch call sync, decoupled
+								<li>easy to replace, simple signature
+								<li>default returns a $.deferred, resolves with JSON
+								<li>our replacement will do the same
 						</aside>
 					</section>
 					<section>
 						<h2>Stub Out Module...</h2>
 						<p>
 							<pre><code>
-module.exports = function(server, collection){
+function mongo_sync(server, collection){
 	return function (method, model, options){
 		var mongojs = require('mongojs');
 		var q = require('q');
@@ -243,8 +257,10 @@ module.exports = function(server, collection){
 							</code></pre>
 						</p>
 						<aside class="notes">
-							We need the module to return a function which then returns our sync method or we'd never be able to get our server and collection info into it easily. We'll also add in the libraries we know we're going to need: Kriskowal's Q and MongoJS.<br>
-							MongoJS hides a lot of nasty MongoDB driver implementation details from us and Q provides our "then"-able object.
+							<ul>
+								<li>module needs to return function for server/collection
+								<li>we need q &amp; mongojs to complete code base
+							</ul>
 						</aside>
 					</section>
 					<section>
@@ -267,7 +283,11 @@ switch(method){
 							</code></pre>
 						</p>
 					<aside class="notes">
-						I find this a little obnoxious, but Backbone doesn't actually just use the HTTP verbs for all of it's method, thanks to it's Ruby-on-Rails extrapolative roots. Luckily, unlike the default sync method, we dont't have to do an object lookup to get this to do the right thing.
+						<ul>
+							<li>Backbone from rails, rails = create &amp; read
+							<li>Implement empty switch to fill in later, just to show what "method" means
+							<li>switch easier to extend than if/else if/else
+						</ul>
 					</aside>
 					</section>
 					<section>
@@ -278,7 +298,7 @@ var callback = function(err, results){
 	if(err){
 		d.reject(err);
 	} else {
-		if(results == 1){
+		if(results === 1){
 			d.resolve(model.toJSON());
 		} else {
 			d.resolve(results[0]);
@@ -288,12 +308,11 @@ var callback = function(err, results){
 							</code></pre>
 						</p>
 						<aside class="notes">
-							<p>
-								Ahh.  You're all looking at that <strong>1</strong> in there eh? well...MongoDB WTF? If you perform an upsert (updating data in place you've already stored), you get back 1. Seriously. Try it. So if we upsert, we'll just return the model data since it's already got all the info we need, we just wanted to verify it's now written to mongo.
-							</p>
-							<p>
-								And see that returning the JSON representation of the model when we resolve? This what the standard sync does, so, again, less surprise == better.
-							</p>
+							<ul>
+								<li>callback is standard node-style, err &amp; data
+								<li>upsert returns 1, obnoxious
+								<li>resolve with pure json (mongodb always returns array for single item
+							</ul>
 						</aside>
 					</section>
 					<section>
@@ -313,7 +332,10 @@ case 'delete':
 							</code></pre>
 						</p>
 						<aside class="notes">
-							OMG A THIRD SLIDE WITH CODE IN A ROW?! But this is the easy part as these verbs really do just map out to simple MongoDB methods.
+							<ul>
+								<li>sorry about third slide with code
+								<li>insert, save and remove are easy to map
+							</ul>
 						</aside>
 					</section>
 					<section>
@@ -336,7 +358,11 @@ default:
 						</code></pre>
 					</p>
 					<aside class="notes">
-						Reading is a little more difficult since we need to formulate a query. Luckily REST tells us that we're just going to get an ID, so that's an easy enough query to watch out for. If you managed to call sync without a method, how does a little rejection feel?
+						<ul>
+							<li>read needs just _id
+							<li>REST spec says so
+							<li>If we use full model, other attributes could confuse
+							<li>reject all others
 					</aside>
 					</section>
 					<section>
@@ -348,9 +374,6 @@ default:
 							That is an exercise left up to the reader.
 						</p>
 					</section>
-					<aside class="notes">
-						Really, I'm just being lazy here because I haven't needed to deal with collections server side...yet
-					</aside>
 				</section>
 				<section>
 					<section>
@@ -366,8 +389,10 @@ default:
 							</ul>
 						</p>
 						<aside class="notes">
-							OK. Phew. Still with me? That was the complex part of the application, so we're in the home stretch. BUT! This next part is almost the most important part -- we need to explain to our code when to attach our new sync method or when to use the default (or even a third implementation!)
-							We check for process, exports and process.browser.
+							<ul>
+								<li>complex part done
+								<li>important part thought -- replace sync when necessary
+							</ul>
 						</aside>
 					</section>
 					<section>
@@ -377,8 +402,7 @@ default:
 if(typeof process !== 'undefined' &&
    !process.browser &&
    typeof exports !== 'undefined'){
-    var sync = require('new_sync');
-    Backbone.sync = sync(server, collection)
+    Backbone.sync = mongosync(server, collection)
 }
 							</code></pre>
 							<p>
@@ -386,7 +410,10 @@ if(typeof process !== 'undefined' &&
 							</p>
 						</p>
 						<aside class="notes">
-							A bit of gnarly if statement up there, but this should take care of all our scenarios -- we need to check if process exists, and then for browserify, we check for "browser" and finally lets see if exports exists for shits and giggles.
+							<ul>
+								<li>if process defined, check brwoser
+								<li>check exports (process defined in phantomjs can screw testing)
+								<li>import new sync (which we just wrote)
 						</aside>
 					</section>
 					<section>
@@ -397,8 +424,7 @@ module.exports = function(server, collection){
 	if(typeof process !== 'undefined' &&
    	   !process.browser &&
    	   typeof exports !== 'undefined'){
-    	var sync = require('new_sync');
-    	Backbone.sync = sync(server, collection);
+    	Backbone.sync = mongosync(server, collection);
 	}
 
 	return Backbone.Model.extend({idAttribute: '_id'});
@@ -406,7 +432,11 @@ module.exports = function(server, collection){
 							</code></pre>
 						</p>
 						<aside class="notes">
-							We will return a custom model back, setting idAttribute correctly for mongodb, just using the basic Backbone.Model.extend method.
+							<ul>
+								<li>return new model, used instead of backbone.model
+								<li>we've set sync when necessary, so hidden details
+								<li>Set idAttribute for mongo for _id
+							</ul>
 						</aside>
 					</section>
 				</section>
