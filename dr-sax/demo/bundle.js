@@ -3,7 +3,7 @@
 
 var ace = require('brace');
 var DrSax = require('dr-sax');
-var markdown = require('markdown');
+var markdown = require('markdown').markdown;
 require('brace/mode/html');
 require('brace/theme/monokai');
 
@@ -17,8 +17,8 @@ converter.addEventListener('click', function(){
 	var contents = editor.getValue();
 	var converted = drsax.write(contents);
 	var md = document.getElementById('markdown');
+	var html = markdown.toHTML(converted).replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"');
 	md.innerHTML = converted.replace(/</g, '&lt;').replace(/>/g, '&gt;');
-	var html = markdown.toHTML(converted);
 	editor.setValue(html);
 });
 },{"brace":2,"brace/mode/html":3,"brace/theme/monokai":5,"dr-sax":9,"markdown":57}],2:[function(require,module,exports){
@@ -20656,7 +20656,8 @@ module.exports = {
     indent: '\t',
     block: true,
     open: '',
-    close: ''  },
+    close: ''  
+  },
   olli: {
     open: '1. ',
     close: '\n'
@@ -20671,28 +20672,34 @@ module.exports = {
     close: ''
   },
   h1: {
-    open: '\n# ',
-    close: '\n'
+    block: true,
+    open: '# ',
+    close: false
   },
   h2: {
-    open: '\n## ',
-    close: '\n'
+    block: true,
+    open: '## ',
+    close: false
   },
   h3: {
-    open: '\n### ',
-    close: '\n'
+    block: true,
+    open: '### ',
+    close: false
   },
   h4: {
-    open: '\n#### ',
-    close: '\n'
+    block: true,
+    open: '#### ',
+    close: false
   },
   h5: {
-    open: '\n##### ',
-    close: '\n'
+    block: true,
+    open: '##### ',
+    close: false
   },
   h6: {
-    open: '\n###### ',
-    close: '\n'
+    block: true,
+    open: '###### ',
+    close: false
   }
 };
 },{}],9:[function(require,module,exports){
@@ -20737,6 +20744,7 @@ var last = require('./array-last');
 var repeat = require('./repeat');
 var rebuildTag = require('./rebuild-tag');
 
+
 /**
  * DrSax is a SAX based HTML to Markdown converter.
  * @namespace DrSax
@@ -20773,7 +20781,7 @@ DrSax.prototype._init = function(){
   this.trimNL = false;
   this.tagStack = [];
   this.ignoreClose = false;
-  this.indentStack = 0;
+  this.indentStack = [];
   this.tag = undefined;
 };
 
@@ -20785,7 +20793,7 @@ DrSax.prototype._init = function(){
  * @returns {string} Markdown!
  */
 DrSax.prototype.write = function(html){
-  this.parser.write(html);
+  this.parser.write(html.replace(/\n/g, '').replace(/\t/g, ''));
   this.parser.end();
   if(this.tagStack.length > 0){
     this._closeUnclosedTags();
@@ -20817,6 +20825,7 @@ DrSax.prototype._closeUnclosedTags = function(){
  */
 DrSax.prototype.onopentag = function(name, attrs){
   var origName = name;
+
   // we want to trim <li> elements so they don't generate multiple lists
   // also here we will determine what actual markdown token to insert
   // based on the parent element for the <li> that we captured above
@@ -20844,22 +20853,27 @@ DrSax.prototype.onopentag = function(name, attrs){
       this.stack.pop();
     }
 
-    // Block level tags that aren't being indented need to be appropriately
-    // spaced out.
-    if(this.tag.block && this.indentStack < 1 && last(this.stack) !== '\n\n'){
-      this.stack.push('\n\n');
+    if(this.tag.block && last(this.stack) !== '\n\n' && this.stack.length > 0){
+      if(this.indentStack.length === 0){
+        this.stack.push('\n\n');
+      } else {
+        this.stack.push('\n');
+      }
     }
 
-    // if we are in a tag that allows tags "inside" of it, we need to maintain
-    // the proper amount of indentation. We'll generate what the containing tag
-    // wants for an index, and if there is an indent, we'll put a newline in front
-    var indentText = repeat(this.tag.indent, this.indentStack);
-    if(indentText.length){
-      indentText = '\n'+indentText;
+    // Examine the indent stack. If we should be indenting, we'll need to prepare
+    // the indented string correctly and insert it into the stack so that
+    // the stack gets the correct data pushed into it
+    if(this.indentStack.length > 0){
+      var indentTag = this.tagTable[last(this.indentStack)];
+      var indentText = repeat(indentTag.indent, this.indentStack.length);
+      this.stack.push(indentText);
     }
-    this.stack.push(indentText);
+
     if(this.tag.indent){
-      ++this.indentStack;
+      if(this.listStack.length !== 1){
+        this.indentStack.push(name);
+      }
     }
 
     if(this.tag.open.length > 0){
@@ -20909,7 +20923,7 @@ DrSax.prototype.ontext = function(text){
   // if we are in a block level tag that is being indented and
   // the text we are about to push isn't being proceded by the
   // open tag for that block level element, add it
-  if(this.tag && this.tag.block && last(this.stack) !== this.tag.open){
+  if(this.tag && this.tag.block && last(this.stack) !== this.tag.open && this.tag.close !== false){
     this.stack.push(this.tag.open);
   }
 
@@ -20919,7 +20933,7 @@ DrSax.prototype.ontext = function(text){
     this.stack.splice(this.splicePos, 0, text);
     ++this.splicePos;
   } else {
-    if(this.trimNL){
+    if(this.trimNL || (this.text === '\n' && last(this.stack).match(/\n$/))){
       text = text.replace(/\n/g, '');
     }
     this.stack.push(text);
@@ -20960,7 +20974,7 @@ DrSax.prototype.onclosetag = function(name){
 
     // if we're in an indentable tag, decrement the indent since we're leaving it.
     if(tag.indent){
-      --this.indentStack;
+      this.indentStack.pop();
     }
 
     // do we need to stop splicing tags?
@@ -20970,7 +20984,7 @@ DrSax.prototype.onclosetag = function(name){
 
     // handle spacing appropriately for nested block level tag elements.
     if(tag.block){
-      if(this.indentStack < 1){
+      if(this.indentStack.length < 1){
         this.stack.push('\n\n');
       } else {
         this.stack.push('\n');
