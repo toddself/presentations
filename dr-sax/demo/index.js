@@ -16,7 +16,7 @@ converter.addEventListener('click', function(){
 	var contents = editor.getValue();
 	var converted = drsax.write(contents);
 	var md = document.getElementById('markdown');
-	var html = markdown.toHTML(converted).replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"');
+	var html = markdown.toHTML(converted).replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/<\/?em>/g, '_');
 	md.innerHTML = converted.replace(/</g, '&lt;').replace(/>/g, '&gt;');
 	editor.setValue(html);
 });
