@@ -2,6 +2,7 @@
 
 var ace = require('brace');
 var DrSax = require('dr-sax');
+var markdown = require('markdown');
 require('brace/mode/html');
 require('brace/theme/monokai');
 
@@ -14,6 +15,8 @@ var converter = document.getElementById('saxify');
 converter.addEventListener('click', function(){
 	var contents = editor.getValue();
 	var converted = drsax.write(contents);
-	editor.getSession().setMode('ace/mode/markdown');
-	editor.setValue(converted);
+	var md = document.getElementById('markdown');
+	md.innerHTML = converted.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+	var html = markdown.toHTML(converted);
+	editor.setValue(html);
 });
