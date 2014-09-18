@@ -1,26 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>ACE in Action</title>
+    <title>Dr. Sax, I presume</title>
     <link rel="stylesheet" type="text/css" href="medium-editor.min.css">
     <style>
         body {padding: 0px; margin: 0px;}
-        #editor {width: 100%; height: 40%; position: absolute; top: 0px;}
-        #controls {width: 100%; height: 18%; position: absolute; top: 42%; border-top: 1px solid black;}
-        #markdown {width: 50%; height: 53%; position: absolute; bottom: 0px;}
-        #htmleditor {width: 50%; height: 53%; position: absolute; bottom: 0px; right: 0px;}
+        #editor {width: 32%; height: 50%; position: absolute; top: 0px; border: 1px solid black;}
+        #markdown {width: 32%; height: 50%; position: absolute; top: 0px; left: 33%;}
+        #htmleditor {width: 32%; height: 50%; position: absolute; top: 0px; left: 66%;}
+        #controls {width: 100%; height: 18%; position: absolute; top: 51%;}
+
     </style>
 </head>
 <body>
-
 <div id="editor"></div>
-<div id="controls">
-<button id="replaceHTML">replace HTML with converted Markdown</button><br>
-<strong>markdown</strong>
-<div style="float: right"><strong>html</strong></div>
-</div>
 <div id="markdown"></div>
 <div id="htmleditor"></div>
+<div id="controls">
+<button id="replaceHTML">replace HTML with converted Markdown</button><br>
+</div>
 
 <script src="bundle.js"></script>
 </body>
