@@ -1,26 +1,29 @@
 'use strict';
-
-var ace = require('brace');
 var DrSax = require('dr-sax');
+var MediumEditor = require('medium-editor');
 var marked = require('marked');
-require('brace/mode/html');
-require('brace/theme/monokai');
 
-var editor = ace.edit('editor');
-editor.getSession().setMode('ace/mode/html');
-editor.setTheme('ace/theme/monokai');
+var markdownEditor = require('./markdown-editor');
+var htmlEditor = require('./html-editor');
+
+var wyswygEditor = new MediumEditor('#editor', {firstHeader: 'h1', secondHeader: 'h2', cleanPastedHTML: true, forcePlainText: false});
 var drsax = new DrSax();
 
-var converter = document.getElementById('saxify');
-converter.addEventListener('click', function(){
-	var contents = editor.getValue();
-	var converted = drsax.write(contents);
-	var md = document.getElementById('markdown');
-	var html = marked(converted)
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
-    .replace(/&quot;/g, '"')
-    .replace(/<\/?em>/g, '_');
-	md.innerHTML = converted.replace(/</g, '&lt;').replace(/>/g, '&gt;');
-	editor.setValue(html);
+var editorDiv = document.getElementById('editor');
+editorDiv.addEventListener('input', function(){
+  var contents = wyswygEditor.serialize().editor.value;
+  var markdown = drsax.write(contents);
+  markdownEditor.setValue(markdown);
+  htmlEditor.setValue(contents);
 });
+
+var converter = document.getElementById('replaceHTML');
+converter.addEventListener('click', function(){
+  var markdown = markdownEditor.getValue();
+  (document.getElementById('editor')).innerText = '';
+  wyswygEditor.pasteHTML(marked(markdown));
+});
+
+window.markdownEditor = markdownEditor;
+window.htmlEditor = htmlEditor;
+window.wyswygEditor = wyswygEditor;
