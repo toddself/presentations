@@ -1,44 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>ACE in Action</title>
-<style type="text/css" media="screen">
-    #editor {
-        position: absolute;
-        top: 0;
-        right: 0;
-        height: 50%;
-        left: 0;
-    }
-    #markdown {
-    	position: absolute;
-    	top: 60%;
-    	right: 0;
-    	bottom: 0;
-    	left:0;
-    	background: black;
-    	color: white;
-    }
-</style>
+    <title>Dr. Sax, I presume</title>
+    <link rel="stylesheet" type="text/css" href="medium-editor.min.css">
+    <style>
+        body {padding: 0px; margin: 0px;}
+        #editor {width: 32%; height: 50%; position: absolute; top: 0px; border: 1px solid black;}
+        #markdown {width: 32%; height: 50%; position: absolute; top: 0px; left: 33%;}
+        #htmleditor {width: 32%; height: 50%; position: absolute; top: 0px; left: 66%;}
+        #controls {width: 100%; height: 18%; position: absolute; top: 51%;}
+
+    </style>
 </head>
 <body>
-
-<div id="editor">&lt;h1&gt;Why use &lt;a href="https://github.com/toddself/dr-sax/"&gt;Dr. Sax&lt;/a&gt;&lt;/h1&gt;
-&lt;ol&gt;
-	&lt;li&gt;Becuase you like puns!&lt;/li&gt;
-	&lt;li&gt;Becuase you need speed&lt;/li&gt;
-&lt;/ol&gt;
-&lt;strong&gt;This is going to be bold!&lt;/strong&gt;
-&lt;h2&gt;Kittens&lt;/h2&gt;Look at these funny little furry things!
-&lt;iframe width="560" height="315" src="//www.youtube.com/embed/h_hKJCe_-sI" frameborder="0" allowfullscreen&gt;&lt;/iframe&gt;
+<div id="editor"></div>
+<div id="markdown"></div>
+<div id="htmleditor"></div>
+<div id="controls">
+<button id="replaceHTML">replace HTML with converted Markdown</button><br>
 </div>
-
-<p style="position: absolute; top: 52%"><button id="saxify">Convert to Markdown</button><br>(Pressing this button will read in the HTML from the live editor, convert it to markdown using <a href="https://github.com/toddself/dr-sax">Dr. Sax</a> and then convert that Markdown BACK into HTML (via <a href="hhttps://github.com/chjj/marked">marked</a> and put that back up into that editor).
-
-
-
-<pre><code id="markdown">
-</code></pre>
 
 <script src="bundle.js"></script>
 </body>

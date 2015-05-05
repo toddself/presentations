@@ -4,13 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "open http://0.0.0.0:8000 && python -m SimpleHTTPServer"
+    "start": "python -m SimpleHTTPServer",
+    "bundle": "browserify --debug index.js > bundle.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "brace": "~0.3.0",
     "dr-sax": "~1.0.7",
-    "marked": "~0.3.2"
+    "marked": "~0.3.2",
+    "medium-editor": "~1.9.4"
   }
 }
