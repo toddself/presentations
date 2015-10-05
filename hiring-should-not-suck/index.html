@@ -15,12 +15,30 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
 
 		<link rel="stylesheet" href="css/reveal.css">
-		<link rel="stylesheet" href="css/theme/forest.css" id="theme">
+		<link rel="stylesheet" href="css/theme/simple.css" id="theme">
 
 		<!-- Code syntax highlighting -->
 		<link rel="stylesheet" href="lib/css/zenburn.css">
 		<style>
 			img { border: 0px !important }
+			div.slides {text-align: left !important;}
+			blockquote {
+				background: url(/img/quotes.png) no-repeat 0px 0px/120px 90px !important;
+				box-shadow: none !important;
+				font-size: 140% !important;
+			}
+			.attribution {
+				font-size: 80%;
+			}
+			h2 {
+				font-weight: bold !important;
+  			color: #fff !important;
+  			background: #000;
+  			padding: 0 0 16px 16px !important;
+			}
+			section {
+				top: 0px !important;
+			}
 		</style>
 	</head>
 
@@ -31,28 +49,31 @@
 			<!-- Any section element inside of this container is displayed as a slide -->
 			<div class="slides">
 				<section>
-					<h1>Interviews Don't Have to Suck</h1>
-					<h4>(Seriously!)</h4>
+					<h1>Lets Make Hiring Better</h1>
 					<p><a href="https://tck.io">Todd Kennedy</a>
-
+					<p>CTO, <a href="http://scripto.cc">Scripto</a>
 					<p><a href="http://twitter.com/whale_eat_squid">@whale_eat_squid</a>
 				</section>
 
 				<section>
-					<h1>Disclaimer</h1>
-					<p class="fragment"><img src="img/noidea.jpg"></p>
+					<h2>Disclaimer</h1>
+					This is based on my personal experiences and the experiences of people I have talked with about this issue.
+
+					In other words, like our good friend Lionel Hutz, I have lots of hearsay and conjecture, and those are <em>kinds</em> of evidence.
+					<img src="img/hutz.png">
+
 				</section>
 
 				<section>
-					<section>
 						Who here has ever walked into an interview and seen a problem written out on a whiteboard?
-						<p class="fragment"><img src="img/sad_kitty-36289.gif">
-					</section>
-					<section>
-						<blockquote>We're looking for a front-end deveveloper with experience using jQuery, Backbone and SASS</blockquote>
-					</section>
-					<section>
-							<pre><code data-trim>
+						<img src="img/sad_kitty-36289.gif">
+				</section>
+				<section>
+				<section>
+					<blockquote>We are looking for a front-end deveveloper with experience using jQuery, Backbone and SASS.</blockquote>
+				</section>
+				<section>
+					<pre><code data-trim>
 
 struct Node {
 	int value
@@ -64,13 +85,11 @@ void findNodes (Node *root, int min, int max, Node *values) {
 	// find all nodes in tree starting at root that are between min and max inclusive
 	// and store the results, sorted from min to max in values
 }
-							</code></pre>
-
-
-						<p class="fragment roll-in">
-							<img src="img/nope.gif" style="border: 0px">
-						</p>
-					</section>
+					</code></pre>
+				</section>
+				</section>
+				<section>
+						<img src="img/nope.gif" style="border: 0px; width: 100%; height: 100%">
 				</section>
 
 				<section>
@@ -88,21 +107,24 @@ void findNodes (Node *root, int min, int max, Node *values) {
 				</section>
 
 				<section>
-					<section>
-						<h2>Why are these approaches used?</h2>
-						<p class="fragment">See how people operate under stress</p>
-						<p class="fragment">Interviewing is hard work &mdash; these are easy solutions</p>
-					</section>
-					<section><img src="http://i.imgur.com/01swcBe.gif"></section>
+					<blockquote>Workplaces that are perceived as diverse have the highest levels of employee engagement</blockquote>
+					<span style="font-size: 60%; text-align: right; display: block"><a href="http://www.gallup.com/businessjournal/22378/when-equal-opportunity-knocks.aspx"><em>When Equal Opportunity Knocks</em></a> &mdash; David C. Wilson</span>
 				</section>
 
 				<section>
-					<h2>OK! Enough! How do we fix this?</h2>
+					<h2>Why are these approaches used?</h2>
+					<p class="fragment">See how people operate under stress
+					<p class="fragment">Right of passage/Exclusivity &mdash; "I had to do this when I was interviewing"
+					<p class="fragment">Interviewing is hard work and these are easy solutions
+				</section>
+
+				<section><img src="http://i.imgur.com/01swcBe.gif" style="width: 100%; height: 100%"></section>
+
+				<section>
+					<h2>How do we fix this?</h2>
 					<p class="fragment">Pair coding!</p>
 					<p class="fragment">Examples relevant towards job</p>
-					<p class="fragment">NO...</p>
-					<p class="fragment">MORE...</p>
-					<p class="fragment">WHITEBOARDS!</p>
+					<p class="fragment">NO MORE WHITEBOARDS</p>
 				</section>
 
 				<section>
@@ -118,11 +140,10 @@ void findNodes (Node *root, int min, int max, Node *values) {
 					<p class="fragment">But don't discount candidates who come across poorly on paper</p>
 					<p class="fragment">Seek consensus when agreeing on candidates - don't bully or horse-trade</p>
 					<p class="fragment">Hire, but not my team === don't hire</p>
-
 				</section>
+
 				<section>
-					<h1>Thank you!</h1>
-					<small class="fragment">PS We are hiring!</small>
+					<h2>Thank you!</h2>
 				</section>
 
 			</div>
