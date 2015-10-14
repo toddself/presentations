@@ -1,0 +1,153 @@
+
+Multi-Client Syncing Strategies
+  What in the wide world of sports
+  Provide for the ability for multiple clients to edit the same document in a nearly-conflict-free method
+  Operations can be applied to structured data in some instances
+  Allows us to "count the chickens without making them stop"
+CAP Theorem
+  A distributed system cannot provide Consistency, Availability and Parition Tolerance at the same time 
+  Eric Brewer, UC Berkley 1999
+  Multi-Client editors must be available (no locking) and may not partition (otherwise divergent documents would occur), but we also can't not be consistant
+  How do we solve this?
+    Some form of Eventual Consistency -- documents will be consistant given the delivery and availabilty of other changesets
+Consistency
+  Convergence: when operations are complete, documents are equal
+  Intention Preservation: For any operation, the effects of executing that operation are the same as executing the operation at the operations origin
+Three main methods for providing this
+  operational transform (google docs, google wave, ms skydrive)
+  differential synchronization (google-mobwrite library, bespin, gedit)
+  Commutative Replicated Data Types (RIAK, league of legends messaging, soundcloud's event stream)
+Differential Synchronization
+  Neil Fraser tech talk at Google given in 2009 (https://www.youtube.com/watch?v=S2Hp_1jqpY8)
+  Pros
+    Easy to digest; diff & patch at it's heart
+    Variants allow for out of order operations
+    Can work without a server
+  Cons
+    Scaling is quite complex - storage of 2 shadows per document (4 docs total)
+    Guaranteed delivery requires tracking an additional document otherwise clients can't drop network connection
+    Diff-Match-Patch is expensive and difficult to apply to structured data
+    Requires client to reply on each operation to confirm receipt
+    Can't track which user is performing the edit
+Conflict-Free Replicated Data Types
+  Two types: Operation-based and State-based
+    Operation based (Commutative Replicated Data Types)
+      Commutative but not idempotent
+      Operations can arrive in any order, but must only arrive once
+    State based (Convergent Replicated Data Types)
+      Send full local state to all other clients
+      Requires that merging be commutative, associative and idempotent
+  WOOT (WithOut Operational Transform) a CRDT implementation for editing
+    Gérald Oster, Pascal Urso, Pascal Molli, Abdessamad Imine 2005
+    Provides PCI
+    Pros
+      Does not require a central server for synchronization
+      Less complex than OT
+    Cons
+      Doesn't allow for deletion of data; removed data is hidden - memory usage becomes an issue
+Operational Transform
+  Orginal concept by the Microelectronics & Computer Technology Corporation for the development of the GROVE outlining system by C.A. Ellis, S.J. Gibbs in1 989. https://www.lri.fr/~mbl/ENS/CSCW/2012/papers/Ellis-SIGMOD89.pdf
+  Defined at Xerox Parc for the Jupiter Collaboration system by David A. Nichols, Pavel Curtis, Michael Dixon, and John Lamping in 1995 http://lively-kernel.org/repository/webwerkstatt/projects/Collaboration/paper/Jupiter.pdf
+  Serialization and broadcast of specific operations performed on a shared text of an equal length, with respect to the document cursor
+    insertCharacters -- insert characters at document cursor
+    deleteCharacters -- delete characters at document cursor
+    retain -- move the cursor a number of characters
+    (could also have openElement, closeElement or insertAtom, removeAtom, etc)
+
+    Example: Lets change `I miss brooklyn` to `I miss Brooklyn`
+    retain(8)
+    deleteCharacters('b')
+    insertCharacters('B')
+    retain(7)
+
+  Google Wave 2009 adds composition to the OT toolkit - if operations occur on the same length of document they can be merged into a single operation.
+
+  Great! Now we have operations, how do we apply them!
+
+  Enter `transform` (didn't see that one coming did you?)
+    Transform applies operations on top of a document without requiring locking or resolving conflicts in a 'sane' fashion
+    Starting with a document that is:
+
+    "Kal"
+
+    Two editors:
+    inserts an `e`
+    inserts an `l`
+
+    Operations:
+    retain(2), insertCharacters('e')
+    retain(2), insertCharacters('l')
+
+    Client 1: Kale
+    Client 2: Kael
+
+
+    client     server
+            /\
+         a /  \ b
+          /    \
+
+    In one client we now have a local version "a" -- adding `e` to the common document, and the server has a local version "b" -- adding `l` to the common document
+
+    To resolve a and b into a cohesive document we apply a transform to the two operations.
+
+    The transform operation takes the two original operations and generates two subsequent operations that can be composed with the original operation to get a operation that can be applied to the current document state.
+
+     client     server
+            /\
+         a /  \ b
+          /    \
+          \    /
+        a2 \  / b2
+            \/
+
+    Document convergence!
+
+    The second changeset arrives at the server first and is broadcast to the first client.  The first client transforms changeset a with b to get b', and then composes a and b' together.  The resulting changeset is:
+
+    retain(3), insertCharacters('e')
+
+    Since the composed changeset is on the document `kal` rather than `ka`.  And thusly BrooklynJS is saved from eating Kael once again.
+
+  But that seems really simple - typers gunna type
+    OT only solves for a both sides of a simple "diamond" type structure!  What happens if we get into a case like this:
+
+     client     server
+            /\
+         a /  \ c
+          /    \
+         /     /
+      b /     / a2
+       /     /
+
+    The solution is to keep track of the shared parentage of the changes by adding another field to each changeset. Wave & Etherpad use a monotically increasing integer (assigned on accept from the server), but a hash of the document contents could be used as well to prevent needing the assignment step.
+
+    Once we know we have a shared parent we can perform numerous transforms. In the simple example we simply tossed the `b'` changeset from the transform operation
+
+            /\
+         a /  \ c
+          /    \
+         /\    /
+      b /  \  / a2
+       /    \/
+            /
+           /  b2
+          /
+
+      Now we need to complete that bottom leg by applying operation `c` to our set -- we can do this by transforming c against all the operations that have occured since the deviation occured from the shared state -- so we transform c against a and then the resulting c' against b, creating c'.  Now we are back in sync!
+
+            /\
+         a /  \ c
+          /    \
+         /\    /
+      b /  \  / a2
+       /    \/
+       \    /
+     c2 \  /  b2
+         \/
+
+      (Google's improvement was to speed this up by composing a + b together into a'' and then only requiring a transform of a'' against c)
+      This does require the client to more work than the server (which means it scales so much better!) -- the client must send the common parent information on each changeset, must send the server the correct transformed version of that operation based on the shared parent and can only send a new changeset once the server has informed the client that it's previous changeset has been accepted.
+
+  
+

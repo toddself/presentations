@@ -1,0 +1,2 @@
+1. Keeping clients in sync is hard. We've all had dreaded merge failures in RCS.
+2. Differential Sync - OG google docs, gedit, CRDT - RIAK, league of legends, soundcloud, OT - etherpad, google docs

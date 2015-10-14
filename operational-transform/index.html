@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Multi-Client Syncing Strategies</title>
+
+		<meta name="description" content="An overview of multi-client syncing strategies">
+		<meta name="author" content="Todd Kennedy">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/simple.css" id="theme">
+
+		<!-- Code syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+		<style>
+      img { 
+        border: 0px !important;
+        display: block !important;
+        margin: 0 auto !important;
+        box-shadow: none !important;
+      }
+			div.slides {text-align: left !important;}
+			blockquote {
+				background: url(img/quotes.png) no-repeat 0px 0px/120px 90px !important;
+				box-shadow: none !important;
+				font-size: 140% !important;
+			}
+			.attribution {
+				font-size: 80%;
+			}
+			h2 {
+				font-weight: bold !important;
+  			color: #fff !important;
+  			background: #000;
+  			padding: 0 0 16px 16px !important;
+			}
+			section {
+				top: 0px !important;
+			}
+      span.pre {
+        font-family: monospace;
+        letter-spacing: .1em;
+        padding 0 5px 0 5px;
+        background: #ddd;
+      }
+      span.insert {
+        color: green;
+        border-bottom: 2px dashed green;
+        background: #ddd;
+        padding: 0 5px 0 5px;
+      }
+		</style>
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+				<section>
+					<h1>Multi-Client Syncing Strategies</h1>
+					<p><a href="https://tck.io">Todd Kennedy</a>
+					<p>CTO, <a href="http://scripto.cc">Scripto</a>
+					<p><a href="http://twitter.com/whale_eat_squid">@whale_eat_squid</a>
+				</section>
+
+				<section>
+          <h2>We have a problem</h2>
+          We want to be able to let multiple people edit the same document
+          <span class="fragment">...but merge conflicts are bad</span>
+        </section>
+
+        <section>
+        <h2>Luckily there are solutions</h2>
+        <ul>
+                <li>Operational Transform (Google Docs, Wave, Etherpad)
+                <li>Differential Synchronization (O.G. Google Docs, Gedit)
+                <li>Conflict-Free Replicated Data Types (RIAK, Soundcloud)
+        </ul>
+        </section>
+        
+        <section>
+          <section>
+          <h2>Differential Synchronization</h2>
+          Neil Fraiser at Google in 2009 (white paper)
+          <ul>
+                <li>Original concept for google docs
+        </ul>
+        </section>
+          <section>
+          <h2>Whats good?</h2>
+          <ul>
+                <li>Much simpler than OT &amp; CRDT
+                <li>Allows for out of order application of changes
+                <li>Can work without central server
+          </ul>
+          </section>
+          <section>
+          <h2>Whats bad?</h2>
+          <ul>
+                <li>Scaling is complex &amp; memory intensive
+                <li>Diff-Match-Patch is hard for structured data
+                <li>Can't track user performing edit in-band
+          </ul>
+          </section>
+        </section>
+        <section>
+          <section>
+          <h2>Conflict-Free Replicated Data Types</h2>
+          Two types of CRDTs
+          </section>
+          <section>
+          <h2>Commutative Replicated Data Types</h2>
+          <ul>
+                  <li>Operation-based
+                  <li>Commutative but not idempotent
+                  <li>Ops can arrive in any order, but must only arrive once
+          </ul>
+          </section>
+          <section>
+          <h2>Convergent Replicated Data Types</h2>
+          <ul>
+                  <li>State-based
+                  <li>Requires sending a lot data over wire (all state)
+                  <li>Requires merge to be commutative, associative and idempotent
+          </ul>
+          </section>
+          <section>
+            <h2>WOOT (WithOut Operational Transform</h2>
+            A CRDT-based method for document editing
+          </section>
+          <section>
+          <h2>Whats Good</h2>
+          <ul>
+                  <li>Does not require a central server
+                  <li>Less complex than OT (debateable!)
+          </ul>
+          </section>
+          <section>
+          <h2>Whats Bad</h2>
+          <ul>
+            <li>Can't delete data.  Seriously, only hide it
+          </ul>
+          </section>
+        </section>
+        <section>
+
+        <section>
+          <h2>Operational Transform</h2>
+          <p style="text-align: center">🎉🎊
+          <p>Developed at MCTC in Austin, TX 1989 &amp; Xerox Parc in 1995 &amp; Google in mid 2000s
+        </section>
+        <section>
+        <blockquote>Serialization and broadcast of specific operations performed on a shared document of equal length, with respect to the document cursor</blockquote>
+        </section>
+        <section>
+        <h2>Basic operations</h2>
+        <ul>
+                <li>insertCharacters
+                <li>deleteCharacters
+                <li>retain
+        </ul>
+        </section>
+        <section>
+          <h2>Example</h2>
+          Lets change "I miss brooklyn" to "I miss Brooklyn"
+            <ul>
+                    <li class="fragment"><span class="pre">retain(8)</span>
+              <li class="fragment"><span class="pre">deleteCharacters('b')</span>
+              <li class="fragment"><span class="pre">insertCharacters('B')</span>
+              <li class="fragment"><span class="pre">retain(7)</span>
+            </ul> 
+        </section>
+        <section>
+        <h2>So.... operations</h2>
+          <p>How do we use them though?
+          </section>
+          <section>
+          <h2>ENTER <span class="pre" style="background: black">TRANSFORM</pre></h2>
+          The transform method is the heart of OT — it can apply operations on top of a document without requiring locking and resolving conflicts in a 'sane' fashion
+        </section>
+        <section>
+          <h3>Transform applies changesets to documents of the same length</h3>
+          <p>All the characters in the retain, insert &amp; delete operations must add up to the length of the current document the transform is being applied to
+        </section>
+        <section>
+          <h2>A better example</h2>
+          Two users editing a document that is the characters <span class="insert">Kal</span>
+          <ul>
+                  <li>User 1 inserts an <span class="insert">e</span>
+                  <li>User 2 inserts an <span class="insert">l</span>
+          </ul>
+          <p>Or, in transforms:
+        <p><span class="pre">retain(2), insertCharacters('e')</span>
+        <p><span class="pre">retain(2), insertCharacters('l')</span>
+        </section>
+        <section>
+        <p>Without OT, you might get <span class="insert">Kale</span> and <span class="insert">Kael</span> in your respective editors
+        </section>
+        <section>
+        But with OT we get the following divergent state:
+        <img src="img/ot1.png">
+        </section>
+        <section>
+        <p>The document has changed in the client and the server, but to two different states. 
+        <p>State A adds <span class="insert">e</span> to the document. State B adds <span class="insert">l</span>
+        <p>Now we need to reconcile the two states
+        </section>
+        <section>
+        Putting both changesets into the <span class="pre">transform</span> method returns two new changesets that can be applied to the current document state respectively, <strong>but only because they're based on the same HEAD revision</strong>
+        <p><code><pre>const [a2, b2] = transform(a, b)</pre></code>
+        <p class="fragment"><img src="img/ot1.png"></p>
+        </section>
+        <section>
+        <p>Now we can apply <span class="pre">a2</span> to document state A and <span class="pre">b2</span> to B and achieve singularity!
+        <p><img src="img/ot2.png">
+        </section>
+        <section>
+        <span class="pre">transform</span> returns a modified <span class="pre">a2</span> that now looks like:
+        <p><span class="pre">retain(3), insertCharacters('e')</span>
+        <p>Which we can now apply to the document state we have received from the other client, <span class="insert">Kal</span> and get <span class="insert">Kale</span>
+        </section>
+        <section>
+        <h2>Alas, writers gonna write</h2>
+        In a more complex scenario you'll be dealing with a lot more changesets with the same parent revision that will conflict. Most OT systems resolve this with a first-in-wins strategy. 
+        </section>
+        <section>
+        This means you'll more often be in scenarios like this:
+        <img src="img/ot3.png">
+        </section>
+        <section>
+        Thankfully the <span class="pre">transform</span> method allows us to resolve for this state as well. 
+        <p>In the simple example we discarded state <span class="pre">b2</span> since the client was disinterested in it and only sent <span class="pre">a2</span> to the server. Here, we need to use that to generate a new "bridge" transform.
+        </section>
+        <section>
+        By transforming <span class="pre">b</span> and <span class="pre">a2</span> we can derive <span class="pre">b2</pre>
+        <img src="img/ot4.png">
+        </section>
+        <section>
+        And keeping with that, we can also transform <span class="pre">b2</span> and <span class="pre">a2</span> agagainst <span class="pre">c</span> to get <span class="pre">c2</span> which we can apply to this document.
+        <img src="img/ot5.png">
+        </section>
+        <section>
+        <h2>That seems kind of laborious</h2>
+        Enter Google Wave! Wave's improvement on this process is the <span class="pre">compose</span> function which is quicker to run than <span class="pre">transform</span> and composes <em>like</em> changesets. So instead of transforming <span class="pre">c</span> against <span class="pre">b2</span> and <span class="pre">a2</span> we can compose the latter into <span class="pre">ab2</span> and just <span class="pre">transform(ab2, c)</span>
+        </section>
+        </section>
+        <section>
+        <h2>Resources</h2>
+        <ul>
+        <li><a href="https://www.lri.fr/~mbl/ENS/CSCW/2012/papers/Ellis-SIGMOD89.pdf">Concurrency Control in Groupware Systems</a>
+        <li><a href="http://lively-kernel.org/repository/webwerkstatt/projects/Collaboration/paper/Jupiter.pdf">High-Latency, Low-Bandwidth Windowing in the Jupiter Collaboration System</a>
+        <li><a href="http://www.codecommit.com/blog/java/understanding-and-applying-operational-transformation">Understanding and Applying Operational Transform</a>
+        <li><a href="http://www.waveprotocol.org/whitepapers/operational-transform">Google Wave Operational Transform</a>
+        <li><a href="https://www.youtube.com/watch?v=S2Hp_1jqpY8">Neil Fraser's Google Tech Talk on Differential Sync</a>
+        <li><a href="https://hal.inria.fr/inria-00071240/document">WitOut Operational Transform</a>
+        <li><a href="https://bitbucket.org/d6y/woot">WOOT for JavaScript and Scala</a>
+        <li><a href="https://github.com/fitzgen/operational-transformation">Operational Transform JS Library</a>
+      </ul>
+        </section>
+        <section>
+        <h2>Thank you!</h2>
+        </section>
+
+			</div>
+		</div>
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+		<script>
+			// Full list of configuration options available at:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+				// Optional reveal.js plugins
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true }
+				]
+			});
+		</script>
+	</body>
+</html>
