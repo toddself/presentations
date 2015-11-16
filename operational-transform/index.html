@@ -68,9 +68,18 @@
 				<section>
 					<h1>Multi-Client Syncing Strategies</h1>
 					<p><a href="https://tck.io">Todd Kennedy</a>
-					<p>CTO, <a href="http://scripto.cc">Scripto</a>
-					<p><a href="http://twitter.com/whale_eat_squid">@whale_eat_squid</a>
 				</section>
+        <section>
+          <p><code></pre>&gt; whoami</pre></code>
+          <p class="fragment"><code></pre>
+            Todd Kennedy<br>
+            <a href="https://twitter.com/whale_eat_squid">@whale_eat_squid</a><br>
+            CTO, Scripto<br>
+            Beard grower</br>
+            <img src="img/me.jpg" style="margin: 0 !important"><br>
+            &gt;
+          </code></pre>
+        </section>
 
 				<section>
           <h2>We have a problem</h2>
@@ -89,16 +98,37 @@
         
         <section>
           <section>
-          <h2>Differential Synchronization</h2>
-          Neil Fraiser at Google in 2009 (white paper)
-          <ul>
-                <li>Original concept for google docs
-        </ul>
-        </section>
+            <h2>Differential Synchronization</h2>
+            Neil Fraiser at Google in 2009 (white paper)
+            <ul>
+                  <li>Original concept for google docs
+                  <li>Uses a character based diff to traffic changes
+            </ul>
+          </section>
+          <section>
+            <h2>A basic example</h2>
+            In a basic, non-networked setup, there are two copies of the text that may be edited at anytime: the copy you're actively working on and the copy stored in your datastore.
+            <ol>
+              <li>Each operation in the active copy is diffed against a <em>shadow</em> copy, creating a diff
+              <li>This diff is handled to the datastore
+              <li>The current version of the active copy becomes the <em>shadow</em> copy
+              <li>The diff is applied as a patch against the datastore
+            </ol>
+          </section>
+          <section>
+            <img src="img/basic-ds.png">
+          </section>
+          <section>
+            <h2>Simple, huh?</h2>
+            <p class="fragment">
+            Keeping muliple remote clients in sync requires 5 copies PER user
+            <img src="img/differential-complexity.gif">
+            </p>
+          </section>
           <section>
           <h2>Whats good?</h2>
           <ul>
-                <li>Much simpler than OT &amp; CRDT
+                <li>Much simpler than OT &amp; CRDT (for various definitions of "simplier")
                 <li>Allows for out of order application of changes
                 <li>Can work without central server
           </ul>
@@ -113,38 +143,38 @@
           </section>
         </section>
         <section>
-          <section>
+        <section>
           <h2>Conflict-Free Replicated Data Types</h2>
           Two types of CRDTs
-          </section>
-          <section>
+        </section>
+        <section>
           <h2>Commutative Replicated Data Types</h2>
           <ul>
                   <li>Operation-based
                   <li>Commutative but not idempotent
                   <li>Ops can arrive in any order, but must only arrive once
           </ul>
-          </section>
-          <section>
+        </section>
+        <section>
           <h2>Convergent Replicated Data Types</h2>
           <ul>
                   <li>State-based
                   <li>Requires sending a lot data over wire (all state)
                   <li>Requires merge to be commutative, associative and idempotent
           </ul>
-          </section>
-          <section>
+        </section>
+        <section>
             <h2>WOOT (WithOut Operational Transform</h2>
             A CRDT-based method for document editing
-          </section>
-          <section>
+        </section>
+        <section>
           <h2>Whats Good</h2>
           <ul>
                   <li>Does not require a central server
                   <li>Less complex than OT (debateable!)
           </ul>
-          </section>
-          <section>
+        </section>
+        <section>
           <h2>Whats Bad</h2>
           <ul>
             <li>Can't delete data.  Seriously, only hide it
@@ -170,12 +200,12 @@
         </section>
         <section>
           <h2>Example</h2>
-          Lets change "I miss brooklyn" to "I miss Brooklyn"
+          Lets change "I like seattle" to "I like Seattle" 
             <ul>
-                    <li class="fragment"><span class="pre">retain(8)</span>
-              <li class="fragment"><span class="pre">deleteCharacters('b')</span>
-              <li class="fragment"><span class="pre">insertCharacters('B')</span>
               <li class="fragment"><span class="pre">retain(7)</span>
+              <li class="fragment"><span class="pre">deleteCharacters('s')</span>
+              <li class="fragment"><span class="pre">insertCharacters('S')</span>
+              <li class="fragment"><span class="pre">retain(6)</span>
             </ul> 
         </section>
         <section>
@@ -192,30 +222,24 @@
         </section>
         <section>
           <h2>A better example</h2>
-          Two users editing a document that is the characters <span class="insert">Kal</span>
+          Two users editing a document that is the characters <span class="insert">Ta</span>
           <ul>
-                  <li>User 1 inserts an <span class="insert">e</span>
-                  <li>User 2 inserts an <span class="insert">l</span>
+                  <li>User 1 inserts <span class="insert">o</span>
+                  <li>User 2 inserts <span class="insert">p</span>
           </ul>
           <p>Or, in transforms:
-        <p><span class="pre">retain(2), insertCharacters('e')</span>
-        <p><span class="pre">retain(2), insertCharacters('l')</span>
-        </section>
-        <section>
-        <p>Without OT, you might get <span class="insert">Kale</span> and <span class="insert">Kael</span> in your respective editors
-        </section>
-        <section>
-        But with OT we get the following divergent state:
-        <img src="img/ot1.png">
+        <p><span class="pre">retain(2), insertCharacters('o')</span>
+        <p><span class="pre">retain(2), insertCharacters('p')</span>
         </section>
         <section>
         <p>The document has changed in the client and the server, but to two different states. 
-        <p>State A adds <span class="insert">e</span> to the document. State B adds <span class="insert">l</span>
-        <p>Now we need to reconcile the two states
+        <p>State A adds <span class="insert">o</span> to the document. State B adds <span class="insert">p</span>
+        <p>Now we need to reconcile the two states so that the unified document is in agreement again
         </section>
         <section>
-        Putting both changesets into the <span class="pre">transform</span> method returns two new changesets that can be applied to the current document state respectively, <strong>but only because they're based on the same HEAD revision</strong>
-        <p><code><pre>const [a2, b2] = transform(a, b)</pre></code>
+        Putting both changesets into the <span class="pre">transform</span> method returns two new changesets that can be applied to the current document state respectively
+        <p><code><pre>const [a2, b2] = transform(a, b)</pre></code></p>
+        <p class="fragment"><strong>...but only because they're based on the same HEAD revision</strong></p>
         <p class="fragment"><img src="img/ot1.png"></p>
         </section>
         <section>
@@ -224,15 +248,16 @@
         </section>
         <section>
         <span class="pre">transform</span> returns a modified <span class="pre">a2</span> that now looks like:
-        <p><span class="pre">retain(3), insertCharacters('e')</span>
-        <p>Which we can now apply to the document state we have received from the other client, <span class="insert">Kal</span> and get <span class="insert">Kale</span>
+        <p><span class="pre">retain(3), insertCharacters('o')</span>
+        <p>Which we can now apply to the document state we have received from the other client, <span class="insert">Tap</span> and get <span class="insert">Tapo</span>
         </section>
         <section>
-        <h2>Alas, writers gonna write</h2>
-        In a more complex scenario you'll be dealing with a lot more changesets with the same parent revision that will conflict. Most OT systems resolve this with a first-in-wins strategy. 
+          <h2>Huh? Tapo isn't a word</h2>
+          <p>No, but it's a conflict-free resolution to the issue — better than git telling you that your head is detacted and you need a three-way merge!
+          <p>In a more complex scenario you'll be dealing with a lot more changesets with the same parent revision that will conflict. Most OT systems resolve this with a first-in-wins strategy. 
         </section>
         <section>
-        This means you'll more often be in scenarios like this:
+        This is a way more likely scenario to encounter: the server and client are diverged by more than one state 
         <img src="img/ot3.png">
         </section>
         <section>
@@ -244,13 +269,23 @@
         <img src="img/ot4.png">
         </section>
         <section>
-        And keeping with that, we can also transform <span class="pre">b2</span> and <span class="pre">a2</span> agagainst <span class="pre">c</span> to get <span class="pre">c2</span> which we can apply to this document.
+        And keeping with that, we can also transform <span class="pre">b2</span> and <span class="pre">a2</span> against <span class="pre">c</span> to get <span class="pre">c2</span> which we can apply to this document. This "stepping" application can be applied on any number of changesets to derive any intermediate state so long as one shared revision exists.
         <img src="img/ot5.png">
         </section>
         <section>
         <h2>That seems kind of laborious</h2>
-        Enter Google Wave! Wave's improvement on this process is the <span class="pre">compose</span> function which is quicker to run than <span class="pre">transform</span> and composes <em>like</em> changesets. So instead of transforming <span class="pre">c</span> against <span class="pre">b2</span> and <span class="pre">a2</span> we can compose the latter into <span class="pre">ab2</span> and just <span class="pre">transform(ab2, c)</span>
+        <p>It is! Not only that but it's Big O is <span class="pre">O(n log n)</span>!
+        <p>This complexity makes it difficult to support large numbers of clients performing operations on the same document.
         </section>
+        <section>
+          <h2>Enter Google Wave</h2>
+          <p>Wave's improvement on this process is the <span class="pre">compose</span> function which is <span class="pre">O(n)</span>.
+          <p>Composes takes changesets performed on the same document and combines them into one changeset.
+          <p>So instead of transforming <span class="pre">c</span> against <span class="pre">b2</span> and <span class="pre">a2</span> we can compose the latter into <span class="pre">ab2</span> and just <span class="pre">transform(ab2, c)</span>
+        </section>
+        </section>
+        <section>
+          <h2>Thank you!</h2>
         </section>
         <section>
         <h2>Resources</h2>
@@ -260,15 +295,12 @@
         <li><a href="http://www.codecommit.com/blog/java/understanding-and-applying-operational-transformation">Understanding and Applying Operational Transform</a>
         <li><a href="http://www.waveprotocol.org/whitepapers/operational-transform">Google Wave Operational Transform</a>
         <li><a href="https://www.youtube.com/watch?v=S2Hp_1jqpY8">Neil Fraser's Google Tech Talk on Differential Sync</a>
-        <li><a href="https://hal.inria.fr/inria-00071240/document">WitOut Operational Transform</a>
+        <li><a href="https://hal.inria.fr/inria-00071240/document">WithOut Operational Transform</a>
         <li><a href="https://bitbucket.org/d6y/woot">WOOT for JavaScript and Scala</a>
         <li><a href="https://github.com/fitzgen/operational-transformation">Operational Transform JS Library</a>
+        <li><a href="https://neil.fraser.name/writing/sync/">Differential Synchronization</a>
       </ul>
         </section>
-        <section>
-        <h2>Thank you!</h2>
-        </section>
-
 			</div>
 		</div>
 		<script src="lib/js/head.min.js"></script>

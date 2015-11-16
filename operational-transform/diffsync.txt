@@ -1,0 +1,17 @@
+      +----------------------+ 
+      |   3 copy text        |
+      v                      v
+   +--------+              +--------+
+   | active |              | shadow |
+   | copy   |  <-1 diff->  | copy   |
+   |        |     |        |        |
+   +--------+     |        +--------+
+                  | 2 send patch
+                  v
+               +--------+
+               | data   |
+               | store  |
+               | copy   | 4 apply patch
+               +--------+
+               
+
