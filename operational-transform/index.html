@@ -258,6 +258,14 @@
           <p>In a more complex scenario you'll be dealing with a lot more changesets with the same parent revision that will conflict. Most OT systems resolve this with a first-in-wins strategy. 
         </section>
         <section>
+          The server is required since it mediates between the clients
+          <img src="img/ot7.png">
+        </section>
+        <section>
+          <h2>And I'll form the head</h2>
+          Since the basis of using the <span class="pre">transform</span> method relies on being able to identify a common head, each revision that is accepted by the server is assigned a unique identifier, which is then referenced in the next changeset as being the changeset's "parent". Our system using a monotonically increasing integer, some systems use a SHA1 hash of the text state at that revision &mdash; either version works. <strong>But!</strong> you can only reference <strong>accepted</strong> changesets.
+        </section>
+        <section>
         This is a way more likely scenario to encounter: the server and client are diverged by more than one state 
         <img src="img/ot3.png">
         </section>
@@ -272,6 +280,10 @@
         <section>
         And keeping with that, we can also transform <span class="pre">b2</span> and <span class="pre">a2</span> against <span class="pre">c</span> to get <span class="pre">c2</span> which we can apply to this document. This "stepping" application can be applied on any number of changesets to derive any intermediate state so long as one shared revision exists.
         <img src="img/ot5.png">
+        </section>
+        <section>
+          <canvas class="js-canvas" width="1000" height="1000"></canvas>
+          <script src="animation.js"></script>
         </section>
         <section>
         <h2>That seems kind of laborious</h2>

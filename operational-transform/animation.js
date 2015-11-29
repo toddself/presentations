@@ -7,20 +7,25 @@ canvas.height = 1000
 const centerLine = Math.floor(canvas.width / 2)
 const lineLen = 40
 const nibSize = 5
-const wait = 500
-let paused = false
+const wait = 300
+let paused = true
 let step = false
+const timeouts = []
 
 window.addEventListener('keydown', function (evt) {
-  if (evt.keyCode === 32) {
+  if (evt.keyCode === 71) {
     paused = !paused
-    console.log(`should be paused ${paused}`)
   }
 
-  if (evt.keyCode === 37) {
+  if (evt.keyCode === 82) {
+    step = false
+    paused = true
+    run()
+  }
+
+  if (evt.keyCode === 83) {
     step = !step
     paused = false
-    console.log(`should be step: ${step}`)
   }
 })
 
@@ -63,9 +68,10 @@ function makeChart (points, index) {
   const lines = []
 
   function nextRow () {
-    setTimeout(function () {
+    const to = setTimeout(function () {
       makeChart(points, ++index)
     }, wait)
+    timeouts.push(to)
   }
 
   function nextLine (lineIndex) {
@@ -74,17 +80,20 @@ function makeChart (points, index) {
     }
 
     if (paused) {
-      return setTimeout(() => nextLine(lineIndex), wait)
+      const to = setTimeout(() => nextLine(lineIndex), wait)
+      timeouts.push(to)
+      return
     }
 
-    drawLine(lines[lineIndex][0], lines[lineIndex][1], '#00FF00')
+    drawLine(lines[lineIndex][0], lines[lineIndex][1], lines[lineIndex][2] || '#00FF00')
 
     if (step) {
       paused = true
       step = false
     }
 
-    setTimeout(() => nextLine(++lineIndex), wait)
+    const to = setTimeout(() => nextLine(++lineIndex), wait)
+    timeouts.push(to)
   }
 
   if (index === 0) {
@@ -99,12 +108,12 @@ function makeChart (points, index) {
       } else if (i + 1 === row.length) {
         const prev = data[index - 1]
         const start = prev[prev.length - 1]
-        lines.push([start, end])
+        lines.push([start, end, '#4444FF'])
       } else {
         const start1 = data[index - 1][i - 1]
         const start2 = data[index - 1][i]
-        lines.push([start2, end])
-        lines.push([start1, end])
+        lines.unshift([start1, end])
+        lines.unshift([start2, end])
       }
     }
   }
@@ -112,4 +121,11 @@ function makeChart (points, index) {
 }
 
 const data = makeData()
-makeChart(data.slice(0), 0)
+
+function run () {
+  timeouts.forEach(to => clearTimeout(to))
+  ctx.clearRect(0, 0, canvas.width, canvas.height)
+  makeChart(data.slice(0), 0)
+}
+
+run()
