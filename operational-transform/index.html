@@ -249,7 +249,7 @@
         </section>
         <section>
         <p>Now we can apply to document state A and <span class="pre">b2</span> to B and achieve singularity!
-        <p>Applying <span class="pre">a2</span> to the document (which is now <span class="insert">Tap</span>) and we end up with <span class="insert">Tapo</span>!
+        <p>By doing that to the document (which is now <span class="insert">Tap</span>) and we end up with <span class="insert">Tapo</span>!
         <p><img src="img/ot2.png">
         </section>
         <section>
@@ -258,12 +258,16 @@
           <p>In a more complex scenario you'll be dealing with a lot more changesets with the same parent revision that will conflict. Most OT systems resolve this with a first-to-the-server strategy... 
         </section>
         <section>
-          The server is required since it mediates between the clients
+          ...since the server mediates the changesets between the clients
           <img src="img/ot7.png">
         </section>
         <section>
-          <h2>And I'll form the head</h2>
-          <p>In order to count the revisions, the server assigns a unique ID to each accepted commit, usually either a SHA1 hash of the content or using some sort of monotonically increasing integer
+          <p>When the server accepts a commit message it
+          <ul>
+            <li>assigns it a unique identifier (usually either a monotonically increasing integer or a SHA1 hash of the current document state).
+            <li>sends a <span class="pre">accept</span> message to the originating client
+            <li>broadcasts the change as to the rest of the connected clients
+          </ul>
         </section>
         <section>
         <h2>In reality...</h2>
@@ -292,7 +296,7 @@
         <p>This complexity makes it difficult to support large numbers of clients performing operations on the same document.
         </section>
         <section>
-          <h2>Enter Google Wave</h2>
+          <h2>Lets just compose ourselves</h2>
           <p>Wave's improvement on this process is the <span class="pre">compose</span> function which is <span class="pre">O(n)</span>.
           <p>Composes takes changesets performed on the same document and combines them into one changeset.
           <p>So instead of transforming <span class="pre">c</span> against <span class="pre">b2</span> and <span class="pre">a2</span> we can compose the latter into <span class="pre">ab2</span> and just <span class="pre">transform(ab2, c)</span>

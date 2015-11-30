@@ -2,8 +2,8 @@
 
 const canvas = document.querySelector('.js-canvas')
 const ctx = canvas.getContext('2d')
-canvas.width = 960 
-canvas.height = 700 
+canvas.width = 960
+canvas.height = 700
 const centerLine = Math.floor(canvas.width / 2)
 const lineLen = 40
 const nibSize = 5
