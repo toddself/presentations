@@ -249,13 +249,13 @@
         </section>
         <section>
         <p>Now we can apply to document state A and <span class="pre">b2</span> to B and achieve singularity!
-        <p>We can now apply <span class="pre">a2</span> to the document (which is now <span class="insert">Tap</span>) and get <span class="insert">Tapo</span>
+        <p>Applying <span class="pre">a2</span> to the document (which is now <span class="insert">Tap</span>) and we end up with <span class="insert">Tapo</span>!
         <p><img src="img/ot2.png">
         </section>
         <section>
           <h2>Huh? Tapo isn't a word</h2>
           <p>No, but it's a conflict-free resolution to the issue — better than git telling you that your head is detacted and you need a three-way merge!
-          <p>In a more complex scenario you'll be dealing with a lot more changesets with the same parent revision that will conflict. Most OT systems resolve this with a first-in-wins strategy. 
+          <p>In a more complex scenario you'll be dealing with a lot more changesets with the same parent revision that will conflict. Most OT systems resolve this with a first-to-the-server strategy... 
         </section>
         <section>
           The server is required since it mediates between the clients
@@ -263,9 +263,10 @@
         </section>
         <section>
           <h2>And I'll form the head</h2>
-          Since the basis of using the <span class="pre">transform</span> method relies on being able to identify a common head, each revision that is accepted by the server is assigned a unique identifier, which is then referenced in the next changeset as being the changeset's "parent". Our system using a monotonically increasing integer, some systems use a SHA1 hash of the text state at that revision &mdash; either version works. <strong>But!</strong> you can only reference <strong>accepted</strong> changesets.
+          <p>In order to count the revisions, the server assigns a unique ID to each accepted commit, usually either a SHA1 hash of the content or using some sort of monotonically increasing integer
         </section>
         <section>
+        <h2>In reality...</h2>
         This is a way more likely scenario to encounter: the server and client are diverged by more than one state 
         <img src="img/ot3.png">
         </section>

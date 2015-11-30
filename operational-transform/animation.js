@@ -2,15 +2,16 @@
 
 const canvas = document.querySelector('.js-canvas')
 const ctx = canvas.getContext('2d')
-canvas.width = 1000
-canvas.height = 1000
+canvas.width = 960 
+canvas.height = 700 
 const centerLine = Math.floor(canvas.width / 2)
 const lineLen = 40
 const nibSize = 5
-const wait = 300
+const wait = 150
 let paused = true
 let step = false
 const timeouts = []
+const height = 13
 
 window.addEventListener('keydown', function (evt) {
   if (evt.keyCode === 71) {
@@ -31,7 +32,7 @@ window.addEventListener('keydown', function (evt) {
 
 function makeData () {
   const data = []
-  for (let idx = 0; idx < 10; idx++) {
+  for (let idx = 0; idx < height; idx++) {
     const y = idx * lineLen
     const points = []
     let adj = idx
