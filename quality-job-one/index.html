@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+    <title>Where Quality is Job #1</title>
+
+		<meta name="author" content="Todd Kennedy">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/simple.css" id="theme">
+
+		<!-- Code syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+		<style>
+      img { 
+        border: 0px !important;
+        display: block !important;
+        margin: 0 auto !important;
+        box-shadow: none !important;
+      }
+			div.slides {text-align: left !important;}
+			blockquote {
+				background: url(img/quotes.png) no-repeat 0px 0px/120px 90px !important;
+				box-shadow: none !important;
+				font-size: 140% !important;
+			}
+			.attribution {
+				font-size: 80%;
+			}
+			h2 {
+				font-weight: bold !important;
+  			color: #fff !important;
+  			background: #000;
+  			padding: 0 0 16px 16px !important;
+			}
+			section {
+				top: 0px !important;
+			}
+      span.pre {
+        font-family: monospace;
+        letter-spacing: .1em;
+        padding 0 5px 0 5px;
+        background: #ddd;
+      }
+      span.insert {
+        color: green;
+        border-bottom: 2px dashed green;
+        background: #ddd;
+        padding: 0 5px 0 5px;
+      }
+		</style>
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+				<section>
+          <h1>Where Quality is jorb #1</h1>
+					<p><a href="https://tck.io">Todd Kennedy</a>
+				</section>
+        <section>
+          <p><code></pre>&gt; whoami</pre></code>
+          <p class="fragment"><code></pre>
+            Todd Kennedy<br>
+            <a href="https://twitter.com/whale_eat_squid">@whale_eat_squid</a><br>
+            CTO, Scripto<br>
+            <img src="img/me.jpg" style="margin: 0 !important"><br>
+            &gt;
+          </code></pre>
+        </section>
+
+				<section>
+          <h2>Testing! Who needs it!</h1>
+          <p class="fragment">We all do!</p>
+          <h2 class="fragment">Why?!</h1>
+          <p class="fragment">Because pobody's nerfect</p>
+        </section>
+
+        <section>
+          <h2>How do we test?</h2>
+          <p class="fragment">We use a test runner to run tests written using a...</p>
+          <p class="fragment">a test framework, verifying results using an...</p>
+          <p class="fragment">assertion library</p>
+        </section>
+
+        <section>
+          <section>
+            <h2>Test Runners &amp; Frameworks</h2> 
+            <ul>
+              <li><a href="http://node-tap.org">Tap</a>
+              <li><a href="https://mochajs.org">Mocha.js</a>
+              <li><a href="http://vowsjs.org">Vows.js</a>
+            </ul>
+          </section>
+          <section>
+            <h2>Assertion Libraries</h2>
+            <ul>
+              <li><a href="http://node-tap.org">tap</a>
+              <li><a href="https://nodejs.org/api/assert.html">assert</a>
+              <li><a href="http://chaijs.com/">chai</a>
+              <li><a href="https://shouldjs.github.io/">should</a>
+              <li><a href="https://github.com/Automattic/expect.js">expect</a>
+            </ul>
+          </section>
+          <section>
+            <h2>Coverage</h2>
+            <ul>
+              <li><a href="https://github.com/gotwarlost/istanbul">istanbul</a>
+              <li><a href="http://blanketjs.org/">blanket</a>
+            </ul>
+          </section>
+        </section>
+
+        <section>
+          <h2>Does anyone actually use TDD?</h2>
+          <ul>
+            <li>I frequently don't know what I want my code to do until I start to write it.
+            <li>But, in general, prefer tests that test functionalty, not just raw input and output
+            <li>Isolate components &amp; systems, not functions and methods
+            <li>Be as terse as possible with your API
+          </ul>
+        </section>
+
+        <section>
+          <h2>Some gripes</h2>
+          <ul>
+            <li>Don't pollute the global namespace (*ahem* <em>mocha</em>)
+            <li>I want to be able to run the test <strong>without</strong> the test runner
+            <li>Make it easy to generate coverage reports
+          </ul>
+        </section>
+
+        <section>
+          <h2>LIVE DEMO!</h2>
+        </section>
+        
+        <section>
+          <h2>Thank you!</h2>
+          <p><a href="https://twitter.com/@whale_eat_squid">@whale_eat_squid</a> | Todd Kennedy
+        </section>
+        <section>
+			</div>
+		</div>
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+		<script>
+			// Full list of configuration options available at:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+				// Optional reveal.js plugins
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true }
+				]
+			});
+		</script>
+	</body>
+</html>
