@@ -1,10 +1,16 @@
 const vows = require('vows')
 const assert = require('assert')
 
-vows.describe('a lot of typing')
+const tests = vows.describe('a lot of typing')
   .addBatch({
     'to define': {
-      'a few tests': () => assert(1, 1, 'yiss')
+      'a few tests': () => throw new Error('huh?') 
     }
-  }).run()
+  })
+
+if (!module.parent) {
+  tests.run()
+} else {
+  tests.export(module)
+}
 

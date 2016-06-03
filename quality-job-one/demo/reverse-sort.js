@@ -1,6 +1,6 @@
 module.exports = function (sortable) {
   if (Array.isArray(sortable)) {
-    return sortable.sort().reverse()
+    return sortable.sort((a, b) => a - b).reverse()
   }
 
   if (typeof sortable === 'string') {
