@@ -29,4 +29,7 @@ Quality is Job #1
 * be less verbose
   * bdd's verbiage is a bit much tbh
 * live demo time!
-
+  * basic tests
+  * testing some code
+  * coverage
+  * why coverage doesn't solve it all
